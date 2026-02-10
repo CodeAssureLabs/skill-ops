@@ -14,6 +14,11 @@ I have implemented the P0 core CLI for the Skill-Ops framework. The CLI is built
   - `validate`: Identifies broken symlinks or missing source directories.
 - **Core Logic**: Implemented manifest parsing, registry resolution, and symlink management in `cli/skill_ops/core.py`.
 - **Exclusion Logic**: Automatically generates `.agent/.gitignore` to prevent machine-specific symlinks from being committed.
+- **Cross-Platform Strategy (ADR-001)**:
+  - Implemented `create_link` abstraction to handle platform differences.
+  - **Windows**: Defaults to **Directory Junctions** (`mklink /J`) for zero-elevation hydration.
+  - **macOS/Linux**: Defaults to standard **Symbolic Links**.
+  - Added `--link-strategy` flag as an escape hatch (`symlink`, `junction`, `copy`).
 
 ## Verification Results
 
