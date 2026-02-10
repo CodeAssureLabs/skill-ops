@@ -19,6 +19,9 @@ I have implemented the P0 core CLI for the Skill-Ops framework. The CLI is built
   - **Windows**: Defaults to **Directory Junctions** (`mklink /J`) for zero-elevation hydration.
   - **macOS/Linux**: Defaults to standard **Symbolic Links**.
   - Added `--link-strategy` flag as an escape hatch (`symlink`, `junction`, `copy`).
+- **Unit Testing Suite**:
+  - Implemented 11 unit and integration tests using `pytest` and `pytest-mock`.
+  - Covers manifest/registry loading, cross-platform `create_link` logic, and all CLI commands (`init`, `list`, `hydrate`, `validate`).
 
 ## Verification Results
 
