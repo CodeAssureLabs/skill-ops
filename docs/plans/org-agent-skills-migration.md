@@ -99,6 +99,6 @@ Creation of the global registry mapping remote SSH URLs to local project paths.
 
 ### Manual Verification
 
-1. Review the new structure in `org-agent-skills`.
-2. Verify that `codeassure-github-bot` can successfully access both `personal` and `org` skills.
-3. Confirm that the move from `skill-ops` can proceed (deletion).
+1. Review the new structure in `org-agent-skills`. ✅ DONE
+2. Verify that `codeassure-github-bot` can successfully access both `personal` and `org` skills. ✅ DONE
+3. Confirm that the move from `skill-ops` can proceed (deletion). ✅ DONE
