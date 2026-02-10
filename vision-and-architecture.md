@@ -70,9 +70,9 @@ To prevent machine-specific symlinks from being committed, a local `.gitignore` 
 ```text
 # .agent/.gitignore
 # because we are adopting skill-ops hydration framework
-skills/personal/
-skills/org/
-skills/team/
+skills/personal
+skills/org
+skills/team
 ```
 
 This ensures the repository remains clean of external links while allowing project-specific capabilities to be versioned.

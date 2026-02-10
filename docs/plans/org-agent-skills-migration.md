@@ -78,6 +78,7 @@ Summary: Migrate from monolithic skills symlink to namespaced Skill-Ops structur
 Manifest defining the `org` namespace and pointing to the `org-agent-skills` remote.
 
 #### [NEW] [.agent/.gitignore](https://github.com/CodeAssureLabs/codeassure-github-bot/.agent/.gitignore)
+
 Local exclusion of namespaced skill folders to keep the root `.gitignore` clean.
 
 ---
