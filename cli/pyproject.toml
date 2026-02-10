@@ -1,0 +1,19 @@
+[project]
+name = "skill-ops"
+version = "0.1.0"
+description = "Agentic DevOps framework for managing AI agent skills"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "typer[all]>=0.15.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "rich>=13.9.0",
+]
+
+[project.scripts]
+skill-ops = "skill_ops.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
