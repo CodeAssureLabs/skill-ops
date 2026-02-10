@@ -9,6 +9,7 @@ Traditional Symbolic Links on Windows requires **Administrator privileges** or *
 ## Implementation Details
 
 ### 1. Linking Abstraction
+
 I introduced a `create_link` helper in `cli/skill_ops/core.py` that abstracts the platform-specific linking logic:
 
 - **Windows**: Uses **Directory Junctions** via `mklink /J`.
@@ -17,7 +18,9 @@ I introduced a `create_link` helper in `cli/skill_ops/core.py` that abstracts th
 - **macOS/Linux**: Uses standard **Symbolic Links** via `os.symlink`.
 
 ### 2. Manual Overrides
+
 The `hydrate` command now supports a `--link-strategy` (or `-s`) flag:
+
 - `symlink`: Force standard symbolic links.
 - `junction`: Force directory junctions (Windows only).
 - `copy`: Fallback that physically copies files (no live-sync).
@@ -25,6 +28,7 @@ The `hydrate` command now supports a `--link-strategy` (or `-s`) flag:
 ## Verification Result
 
 On macOS, I verified that:
+
 1. `skill-ops hydrate --link-strategy symlink` creates a proper symbolic link.
 2. `skill-ops hydrate --link-strategy copy --force` creates a real directory copy.
 3. The default behavior on POSIX correctly selects `symlink`.
