@@ -1,4 +1,6 @@
+from enum import Enum
 from pathlib import Path
+from typing import Optional
 
 import typer
 from rich.console import Console
@@ -9,6 +11,12 @@ app = typer.Typer(
     add_completion=False,
 )
 console = Console()
+
+
+class LinkStrategy(str, Enum):
+    SYMLINK = "symlink"
+    JUNCTION = "junction"
+    COPY = "copy"
 
 
 @app.command()
@@ -37,6 +45,9 @@ def hydrate(
     force: bool = typer.Option(
         False, "--force", "-f", help="Force hydration even if symlinks exist"
     ),
+    strategy: Optional[LinkStrategy] = typer.Option(
+        None, "--link-strategy", "-s", help="Override the default linking strategy"
+    ),
 ):
     """
     Read the Skill-Ops manifest and create symlinks for skills.
@@ -44,7 +55,9 @@ def hydrate(
     from .core import hydrate_skills
 
     try:
-        stats = hydrate_skills(force=force)
+        stats = hydrate_skills(
+            force=force, strategy=strategy.value if strategy else None
+        )
         console.print("[green]Successfully hydrated skills![/green]")
         for ns, count in stats.items():
             console.print(f"  - {ns}: {count} skills linked")
