@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+import subprocess
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -67,7 +69,44 @@ def init_manifest(agent_path: Path) -> Path:
     return manifest_file
 
 
-def hydrate_skills(force: bool = False) -> Dict[str, int]:
+def create_link(source: Path, target: Path, strategy: Optional[str] = None):
+    """
+    Create a link from source to target using the specified strategy or platform default.
+    Strategies: 'symlink', 'junction', 'copy'
+    """
+    if not strategy:
+        strategy = "junction" if os.name == "nt" else "symlink"
+
+    if strategy == "junction":
+        if os.name != "nt":
+            # Fallback to symlink on non-Windows if junction requested
+            os.symlink(source, target)
+        else:
+            # Force absolute paths for Junctions as per ADR-001
+            subprocess.run(
+                [
+                    "cmd",
+                    "/c",
+                    "mklink",
+                    "/J",
+                    str(target.absolute()),
+                    str(source.absolute()),
+                ],
+                check=True,
+                capture_output=True,
+            )
+    elif strategy == "copy":
+        if source.is_dir():
+            shutil.copytree(source, target)
+        else:
+            shutil.copy2(source, target)
+    else:  # default to symlink
+        os.symlink(source, target)
+
+
+def hydrate_skills(
+    force: bool = False, strategy: Optional[str] = None
+) -> Dict[str, int]:
     cwd = Path.cwd()
     agent_path = cwd / ".agent"
     manifest = load_manifest(agent_path)
@@ -99,12 +138,14 @@ def hydrate_skills(force: bool = False) -> Dict[str, int]:
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
         if target_path.exists():
-            if force or target_path.is_symlink():
+            if (
+                force
+                or target_path.is_symlink()
+                or (os.name == "nt" and strategy == "junction")
+            ):
                 if target_path.is_symlink():
                     target_path.unlink()
                 elif target_path.is_dir():
-                    import shutil
-
                     shutil.rmtree(target_path)
             else:
                 print(
@@ -112,7 +153,7 @@ def hydrate_skills(force: bool = False) -> Dict[str, int]:
                 )
                 continue
 
-        os.symlink(source_path, target_path)
+        create_link(source_path, target_path, strategy=strategy)
         stats[ns_name] = sum(
             1
             for p in source_path.iterdir()
